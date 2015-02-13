@@ -9,20 +9,24 @@ var process  = require('process'),
 var zkNode = process.env.ZK_PORT_2181_TCP_ADDR + ':'
  		   + process.env.ZK_PORT_2181_TCP_PORT ;
 
-var client = new Client(zkNode)
+console.log("Connecting to ZK node: " + zkNode);
+
+var client = new Client(zkNode);
 
 var producer = new Producer(client);
 
 producer.on('ready', () => {
 	console.log("Producer ready");
+    console.dir(producer);
 
 	setInterval(function () {
-        var message = [];
-
-        message.push("Just a random message");
-
         var payloads = [
-            { topic: 'transaction', messages: message }
+            {
+                topic: 'transaction',
+                messages: 'This is a test at ' + new Date(),
+                partition: 0,
+                attributes: 0
+            }
         ];
         producer.send(payloads, function (err, data) {
             console.log("Sent");
@@ -33,5 +37,5 @@ producer.on('ready', () => {
 });
 
 producer.on('error', (e) => {
-	console.log("ERROR", e);
+	console.log("ERROR");
 });

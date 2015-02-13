@@ -16,7 +16,7 @@ console.log("Connecting to ZK node: " + zkNode);
 var consumer = new Consumer(
         client,
         [
-            { topic: 'transaction', partition: 1 }
+            { topic: 'transaction', partition: 0 }
         ],
         {
             autoCommit: false
@@ -25,6 +25,7 @@ var consumer = new Consumer(
 
 consumer.on('ready', () => {
     console.log('Consumer ready');
+    console.dir(consumer);
     consumer.on('message', (message) => {
         console.log("-> " + message.value);
     });
@@ -32,5 +33,5 @@ consumer.on('ready', () => {
 });
 
 consumer.on('error', (e) => {
-    console.log("ERROR", e);
+    console.log("ERROR");
 });
