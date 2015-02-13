@@ -1,3 +1,6 @@
 [submodule "kafka-docker"]
 	path = kafka-docker
 	url = https://github.com/bankofse/kafka-docker.git
+[submodule "web"]
+	path = web
+	url = https://github.com/bankofse/web.git
