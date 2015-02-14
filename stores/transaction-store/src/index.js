@@ -5,29 +5,43 @@ var process  = require('process'),
 	Consumer = kafka.Consumer
 ;
 
-var zkNode = process.env.ZK_PORT_2181_TCP_ADDR + ':'
- 		   + process.env.ZK_PORT_2181_TCP_PORT ;
+var zkNode = (process.env.ZK_PORT_2181_TCP_ADDR || 'localhost') + ':'
+ 		   + (process.env.ZK_PORT_2181_TCP_PORT || 2187);
 
+console.info("Creating Client Connection to zk " + zkNode);
 var client = new Client(zkNode);
 
-console.info("Starting Transaction Store");
-console.info("Connecting to ZK node: " + zkNode);
+function Store(client, topic) {
+    //if (!(this.isInstanceOf(Store)))
+    //    return new Store(client, topic);
 
-var consumer = new Consumer(
+    this.client = client;
+    this.topic = topic;
+
+    this.consumer = new Consumer(
         client,
         [
-            { topic: 'transaction', partition: 0 }
+            { topic: topic, partition: 0 }
         ],
         {
             autoCommit: false
         }
     );
+    this.consumer.on('message', this.onMessage.bind(this));
+    this.consumer.on('error', this.onError.bind(this));
+}
 
-consumer.on('message', (message) => {
-    console.info("-> " + message.value);
-});
+Store.prototype.onMessage = function (message) {
+    console.log("->", message);
+};
 
-consumer.on('error', (e) => {
-    console.log("ERROR", e);
-    consumer.close();
-});
+
+Store.prototype.onError = function (e) {
+    console.error(e);
+};
+
+setTimeout(() => {
+    console.info("Starting Store");
+    var store = new Store(client, 'transaction');
+}, 10000);
+
