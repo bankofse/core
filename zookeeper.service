@@ -1,0 +1,14 @@
+[Unit]
+Description=Zookeeper for kafka
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill zk
+ExecStartPre=-/usr/bin/docker rm zk
+ExecStartPre=/usr/bin/docker pull wurstmeister/zookeeper
+ExecStart=/usr/bin/docker run --name zk -p 2181 wurstmeister/zookeeper
+
+[Install]
+WantedBy=multi-user.target

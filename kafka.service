@@ -1,0 +1,14 @@
+[Unit]
+Description=Kafka Backend
+After=zookeeper.service
+Requires=zookeeper.service
+
+[Service]
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill kafka
+ExecStartPre=-/usr/bin/docker rm kafka
+ExecStartPre=/usr/bin/docker pull 7imbrook/kafka-docker
+ExecStart=/usr/bin/docker run --name kafka --link zk:zk -v /var/run/docker.sock:/var/run/docker.sock -e KAFKA_ADVERTISED_HOST_NAME=cluster1.student.rit.edu -p 9092 7imbrook/kafka-docker
+
+[Install]
+WantedBy=multi-user.target
