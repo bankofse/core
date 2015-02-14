@@ -19,11 +19,13 @@ dispatcher:
     - "4000"
   links:
     - zookeeper:zk
+    - kafka
 
 transactionstore:
   build: ./stores/transaction-store
   links:
     - zookeeper:zk
+    - kafka
 
 web:
   build: ./web

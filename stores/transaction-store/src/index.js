@@ -10,8 +10,8 @@ var zkNode = process.env.ZK_PORT_2181_TCP_ADDR + ':'
 
 var client = new Client(zkNode);
 
-console.log("Starting Transaction Store");
-console.log("Connecting to ZK node: " + zkNode);
+console.info("Starting Transaction Store");
+console.info("Connecting to ZK node: " + zkNode);
 
 var consumer = new Consumer(
         client,
@@ -23,15 +23,11 @@ var consumer = new Consumer(
         }
     );
 
-consumer.on('ready', () => {
-    console.log('Consumer ready');
-    console.dir(consumer);
-    consumer.on('message', (message) => {
-        console.log("-> " + message.value);
-    });
-
+consumer.on('message', (message) => {
+    console.info("-> " + message.value);
 });
 
 consumer.on('error', (e) => {
-    console.log("ERROR");
+    console.log("ERROR", e);
+    consumer.close();
 });
