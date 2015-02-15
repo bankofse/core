@@ -1,0 +1,14 @@
+[Unit]
+Description=Consul Service Discovery
+After=consul.service
+Requires=consul.service
+
+[Service]
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill registrator
+ExecStartPre=-/usr/bin/docker rm registrator
+ExecStartPre=/usr/bin/docker pull progrium/registrator
+ExecStart=/usr/bin/docker run --name registrator -v /var/run/docker.sock:/tmp/docker.sock -h $HOSTNAME progrium/registrator consul://cluster1.student.rit.edu:8500
+
+[Install]
+WantedBy=multi-user.target
